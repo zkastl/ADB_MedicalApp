@@ -15,6 +15,8 @@ class Base(object):
         for key, value in kwargs.items():
             if type(value).__name__ == 'int':
                 statement += str(value) + ', '
+            elif type(value).__name__ == 'datetime.datetime':
+                statement += str(value) + ', '
             else:
                 statement += '\'' + str(value) + '\', '
         statement = statement[:-2]
