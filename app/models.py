@@ -1,9 +1,30 @@
 from datetime import datetime
-
+from database import get_conn
 
 class Base(object):
     __tablename__ = ''
     create_sql = ''
+
+    @classmethod
+    def insert(cls, **kwargs):
+        statement = 'INSERT INTO ' + cls.__tablename__ + '('
+        for key, value in kwargs.items():
+            statement += key + ', '
+        statement = statement[:-2]
+        statement += ') VALUES('
+        for key, value in kwargs.items():
+            if type(value).__name__ == 'int':
+                statement += str(value) + ', '
+            else:
+                statement += '\'' + str(value) + '\', '
+        statement = statement[:-2]
+        statement += ');'
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(statement)
+        conn.commit()
+        cursor.close()
+        conn.close()
 
 
 class MedicalVisit(Base):
