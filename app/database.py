@@ -9,6 +9,55 @@ import inspect
 # Define our connection string
 conn_string = "host='localhost' dbname='postgres' user='postgres' password='secret'"
 
+last_names = [
+    'Pineda',
+    'Patel',
+    'Gould',
+    'Orozco',
+    'Stanley',
+    'Johnson',
+    'Chan',
+    'Gaines',
+    'Goodman',
+    'Wilkerson',
+    'Allen',
+    'Lucas',
+    'Krause',
+    'Gonzalez',
+    'Summers',
+    'Jefferson',
+    'Singh',
+    'Barry',
+    'Murphy',
+    'Mays'
+    ]
+
+first_names = [
+    'Zaid',
+    'Callum',
+    'Jeff',
+    'Ezeqiel',
+    'Juan',
+    'Giovanni',
+    'Johan',
+    'Pedro'
+    'Raiden',
+    'Sage',
+    'Scott',
+    'Aiyana',
+    'Ariel',
+    'Ivy',
+    'Krista',
+    'Lillie',
+    'Litzy',
+    'Aliza',
+    'Sierra',
+    'Dixie',
+    'Salma',
+    'Janae',
+    'Itzel'
+    ]
+
 
 def init_db():
     conn = get_conn()
@@ -71,5 +120,13 @@ def get_conn():
     return conn
 
 
+def make_records():
+    from models import PatientRecord
+    import random
+    for i in range(1000):
+        PatientRecord.insert(first_name=random.choice(first_names), last_name=random.choice(last_names), age=random.randint(5,90))
+
+
 if __name__ == '__main__':
     reset_db()
+    make_records()
