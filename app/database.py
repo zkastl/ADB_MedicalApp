@@ -1,5 +1,13 @@
 # Command for Docker to setup database
 # docker run --name postgres -p 5432:5432 -d postgres:10
+
+# For column and row oriented in one
+# docker run --name column -p 5432:5432 -d simpleman19/columndb
+# docker exec -it column /bin/bash
+# Run command: echo "shared_preload_libraries = 'cstore_fdw'" >> /var/lib/postgresql/data/postgresql.conf
+# Exit
+# docker restart column
+
 # After running docker command run this python file to create/reset DB with tables
 
 import psycopg2
@@ -68,6 +76,7 @@ def init_db():
             if issubclass(cls, models.Base) and name != 'Base':
                 print('Found Model: ' + name)
                 cursor.execute(cls.create_sql)
+                cursor.execute(cls.create_column_sql)
     conn.commit()
     cursor.execute('SELECT show_tables()')
     ret = cursor.fetchall()
@@ -112,7 +121,30 @@ def drop_db():
 
 def reset_db():
     drop_db()
+    setup_column_server()
     init_db()
+
+
+def setup_column_server():
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute('''
+                        CREATE EXTENSION cstore_fdw;
+                        CREATE SERVER cstore_server FOREIGN DATA WRAPPER cstore_fdw;
+                    '''
+                   )
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
+def copy_table_to_col_version(table):
+    conn = get_conn()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO ' + table + '_col SELECT * FROM ' + table + ';')
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
 def get_conn():

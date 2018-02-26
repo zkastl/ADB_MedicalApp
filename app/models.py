@@ -1,12 +1,27 @@
 from datetime import datetime
 from database import get_conn
 
+
 class Base(object):
     __tablename__ = ''
     create_sql = ''
 
     @classmethod
     def insert(cls, **kwargs):
+        statement = cls.gen_insert_sql(**kwargs)
+        cls.run_sql(statement)
+
+    @classmethod
+    def run_sql(cls, statement):
+        conn = get_conn()
+        cursor = conn.cursor()
+        cursor.execute(statement)
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+    @classmethod
+    def gen_insert_sql(cls, **kwargs):
         statement = 'INSERT INTO ' + cls.__tablename__ + '('
         for key, value in kwargs.items():
             statement += key + ', '
@@ -21,12 +36,7 @@ class Base(object):
                 statement += '\'' + str(value) + '\', '
         statement = statement[:-2]
         statement += ');'
-        conn = get_conn()
-        cursor = conn.cursor()
-        cursor.execute(statement)
-        conn.commit()
-        cursor.close()
-        conn.close()
+        return statement
 
 
 class MedicalVisit(Base):
@@ -45,7 +55,17 @@ class MedicalVisit(Base):
     visit_reason VARCHAR(1000),
     patient_comments VARCHAR(1000),
     doctor_comments VARCHAR(1000)
-    )'''
+    );'''
+    create_column_sql = create_colunn_sql = 'CREATE FOREIGN TABLE ' + __tablename__ + '''_col(
+    id INT,
+    visit_date  TIMESTAMP,
+    visit_reason VARCHAR(1000),
+    patient_comments VARCHAR(1000),
+    doctor_comments VARCHAR(1000)
+    )
+    SERVER cstore_server
+    OPTIONS(compression 'pglz');
+    '''
 
 
 class PatientRecord(Base):
@@ -64,4 +84,14 @@ class PatientRecord(Base):
     first_name VARCHAR(1000),
     last_name VARCHAR(1000),
     age INTEGER
-    )'''
+    );'''
+
+    create_column_sql = 'CREATE FOREIGN TABLE ' + __tablename__ + '''_col(
+    id INT,
+    first_name VARCHAR(1000),
+    last_name VARCHAR(1000),
+    age INTEGER
+    )
+    SERVER cstore_server
+    OPTIONS(compression 'pglz');
+    '''

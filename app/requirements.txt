@@ -1,1 +1,5 @@
+Faker==0.8.11
 psycopg2==2.7.4
+python-dateutil==2.6.1
+six==1.11.0
+text-unidecode==1.1
