@@ -1,0 +1,1 @@
+﻿create nonclustered columnstore index c_idx on dbo.MOCK_PATIENT_RECORDS (id, first_name, last_name);

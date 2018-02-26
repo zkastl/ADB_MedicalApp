@@ -49,9 +49,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="CreateIndexForMockPatientRecords.sql" />
-    <Content Include="MOCK_PATIENT_RECORDS.sql" />
+    <Content Include="1MillionRecords.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Index.sql" />
+    <Content Include="AlterProperties.sql" />
+    <Content Include="MOCK_PATIENT_RECORDS.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="MOCK_WEATHER.sql" />
+    <Content Include="patient_records.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

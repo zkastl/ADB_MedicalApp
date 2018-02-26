@@ -152,3 +152,4 @@ fabric.properties
 
 /.vs/ADB_MedicalApp/v15/Server/sqlite3
 /MedicalRecords/obj/Debug
+/MedicalRecords/bin/Debug
